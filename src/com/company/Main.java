@@ -1,6 +1,5 @@
 package com.company;
 
-import java.security.SecureRandom;
 import java.util.Scanner;
 
 public class Main {
@@ -50,13 +49,15 @@ public class Main {
     }
 
     public static String[][] find_path(String[][] matrix, int x, int y) {
+        String str = "????????????????????????????????????????????????????????????????????????????????????????????????????";
+        String[][] memory = inputMatrix(str, 10);
         int x0 = x;
         int y0 = y;
         if (x == 0 && y == 0) {
             System.out.println("Человек и собака в одной клетке!");
         }
         while (x != 0 || y != 0) {
-            String direction = where_from(matrix, x, y);
+            String direction = where_from(matrix, x, y, memory);
             if (direction.equals("N")) {
                 System.out.println("Пути нет");
                 break;
@@ -72,15 +73,21 @@ public class Main {
         return matrix;
     }
 
-    public static String where_from(String[][] matrix, int x, int y) {
+    public static String where_from(String[][] matrix, int x, int y, String[][] memory) {
+
+        if (!memory[x][y].equals("?")) {
+            return memory[x][y];
+        }
         if (x > 0) {
             int leftX = x - 1;
             int leftY = y;
             if (leftX == 0 && leftY == 0) {
+                memory[x][y] = "L";
                 return "L";
             }
             if (!matrix[leftX][leftY].equals("*")) {
-                if (!where_from(matrix, leftX, leftY).equals("N")) {
+                if (!where_from(matrix, leftX, leftY, memory).equals("N")) {
+                    memory[x][y] = "L";
                     return "L";
                 }
             }
@@ -90,12 +97,14 @@ public class Main {
             int upX = x;
             int upY = y - 1;
             if (upX == 0 && upY == 0) {
+                memory[x][y] = "U";
                 return "U";
             }
             if (!matrix[upX][upY].equals("*")) {
-                if (!where_from(matrix, upX, upY).equals("N")) {
+                if (!where_from(matrix, upX, upY, memory).equals("N")) {
+                    memory[x][y] = "U";
                     return "U";
-                }
+                                    }
             }
         }
         return "N";
